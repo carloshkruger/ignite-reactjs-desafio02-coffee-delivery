@@ -12,8 +12,9 @@ import cubano from '../../assets/coffees/cubano.png'
 import havaiano from '../../assets/coffees/havaiano.png'
 import arabe from '../../assets/coffees/arabe.png'
 import irlandes from '../../assets/coffees/irlandes.png'
+import { Coffee } from '../../contexts/CartContext'
 
-export const coffeeList = [
+export const coffeeList: Coffee[] = [
   {
     id: 1,
     name: 'Expresso Tradicional',

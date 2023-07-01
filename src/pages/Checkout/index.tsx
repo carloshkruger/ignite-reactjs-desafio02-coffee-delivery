@@ -48,9 +48,12 @@ import {
   SummaryTotalValue,
 } from './styles'
 
-import irlandes from '../../assets/coffees/irlandes.png'
+import { useContext } from 'react'
+import { CartContext } from '../../contexts/CartContext'
 
 export function Checkout() {
+  const { cartItems } = useContext(CartContext)
+
   return (
     <CheckoutContainer>
       <FinishOrderContainer>
@@ -114,54 +117,32 @@ export function Checkout() {
       <SelectedCoffeesContainer>
         <SelectedCoffeesTitle>Cafés selecionados</SelectedCoffeesTitle>
         <SelectedCoffeeList>
-          <SelectedCoffeeItem>
-            <SelectedCoffeeItemLeftPart>
-              <img src={irlandes} alt="" />
-              <SelectedCoffeeNameAndActions>
-                <SelectedCoffeeName>Expresso Tradicional</SelectedCoffeeName>
-                <SelectedCoffeeActions>
-                  <CoffeeCounter>
-                    <CoffeeCounterButton>
-                      <Minus size={14} />
-                    </CoffeeCounterButton>
-                    <CoffeeCounterValue>1</CoffeeCounterValue>
-                    <CoffeeCounterButton>
-                      <Plus size={14} />
-                    </CoffeeCounterButton>
-                  </CoffeeCounter>
-                  <DeleteCoffeeButton>
-                    <Trash size={16} />
-                    REMOVER
-                  </DeleteCoffeeButton>
-                </SelectedCoffeeActions>
-              </SelectedCoffeeNameAndActions>
-            </SelectedCoffeeItemLeftPart>
-            <SelectedCoffeePrice>R$ 9,90</SelectedCoffeePrice>
-          </SelectedCoffeeItem>
-          <SelectedCoffeeItem>
-            <SelectedCoffeeItemLeftPart>
-              <img src={irlandes} alt="" />
-              <SelectedCoffeeNameAndActions>
-                <SelectedCoffeeName>Expresso Tradicional</SelectedCoffeeName>
-                <SelectedCoffeeActions>
-                  <CoffeeCounter>
-                    <CoffeeCounterButton>
-                      <Minus size={14} />
-                    </CoffeeCounterButton>
-                    <CoffeeCounterValue>1</CoffeeCounterValue>
-                    <CoffeeCounterButton>
-                      <Plus size={14} />
-                    </CoffeeCounterButton>
-                  </CoffeeCounter>
-                  <DeleteCoffeeButton>
-                    <Trash size={16} />
-                    REMOVER
-                  </DeleteCoffeeButton>
-                </SelectedCoffeeActions>
-              </SelectedCoffeeNameAndActions>
-            </SelectedCoffeeItemLeftPart>
-            <SelectedCoffeePrice>R$ 9,90</SelectedCoffeePrice>
-          </SelectedCoffeeItem>
+          {cartItems.map((item) => (
+            <SelectedCoffeeItem key={item.coffee.id}>
+              <SelectedCoffeeItemLeftPart>
+                <img src={item.coffee.imageName} alt="" />
+                <SelectedCoffeeNameAndActions>
+                  <SelectedCoffeeName>{item.coffee.name}</SelectedCoffeeName>
+                  <SelectedCoffeeActions>
+                    <CoffeeCounter>
+                      <CoffeeCounterButton>
+                        <Minus size={14} />
+                      </CoffeeCounterButton>
+                      <CoffeeCounterValue>{item.quantity}</CoffeeCounterValue>
+                      <CoffeeCounterButton>
+                        <Plus size={14} />
+                      </CoffeeCounterButton>
+                    </CoffeeCounter>
+                    <DeleteCoffeeButton>
+                      <Trash size={16} />
+                      REMOVER
+                    </DeleteCoffeeButton>
+                  </SelectedCoffeeActions>
+                </SelectedCoffeeNameAndActions>
+              </SelectedCoffeeItemLeftPart>
+              <SelectedCoffeePrice>R$ 9,90</SelectedCoffeePrice>
+            </SelectedCoffeeItem>
+          ))}
 
           <PurchaseSummaryContainer>
             <SummaryItem>
