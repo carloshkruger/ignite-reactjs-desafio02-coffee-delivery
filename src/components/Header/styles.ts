@@ -21,7 +21,7 @@ export const HeaderContainer = styled.header`
       gap: 0.75rem;
     }
 
-    a {
+    & > div > a {
       width: 3rem;
       height: 3rem;
 
