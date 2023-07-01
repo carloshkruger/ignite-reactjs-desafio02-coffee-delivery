@@ -1,56 +1,78 @@
 import styled from 'styled-components'
 
-export const HeaderContainer = styled.header`
+export const HomeContainer = styled.div`
+  padding-top: 5.875rem;
+`
+
+export const FirstContent = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2rem 1rem;
+  flex-direction: row;
+  gap: 3.5rem;
 
-  nav {
-    display: flex;
-    gap: 0.5rem;
-
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
-    max-width: 70rem;
-    margin: 0 auto;
-
-    & > div {
-      display: flex;
-      gap: 0.75rem;
-    }
-
-    a {
-      width: 3rem;
-      height: 3rem;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      background: ${(props) => props.theme['yellow-light']};
-
-      color: ${(props) => props.theme['yellow-dark']};
-      border-radius: 6px;
+  @media screen and (max-width: 1120px) {
+    & > img {
+      display: none;
     }
   }
+
+  /* background: radial-gradient(at 50% 40%, #fff, transparent 80%),
+    radial-gradient(at 50% -47%, hsla(313, 39%, 93%, 1), transparent 80%),
+    radial-gradient(at 100% 0%, hsla(320, 78%, 79%, 1) 0, transparent 32%),
+    radial-gradient(at 100% 98%, #fff1eb, transparent),
+    radial-gradient(at 0 97%, hsla(193, 81%, 84%, 1), transparent); */
 `
 
-export const LocationContainer = styled.div`
+export const DescriptionContainer = styled.div``
+
+export const Title = styled.h1`
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 130%;
+  font-family: 'Baloo 2';
+  margin-bottom: 1rem;
+`
+
+export const SubTitle = styled.h3`
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 130%;
+`
+
+export const BenefitsContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1.158fr;
+  gap: 1.25rem 2.5rem;
+  margin-top: 4.375rem;
+`
+
+export const BenefitItem = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  background: ${(props) => props.theme['purple-light']};
-  padding: 0.5rem;
-  color: ${(props) => props.theme['purple-dark']};
-  border-radius: 6px;
+  gap: 0.75rem;
 `
 
-export const LocationText = styled.span`
-  white-space: nowrap;
-  max-width: 10rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
+const ICON_BACKGROUND_COLORS = {
+  yellowDark: 'yellow-dark',
+  yellow: 'yellow',
+  baseText: 'base-text',
+  purple: 'purple',
+} as const
+
+interface BenefitItemIconContainerProps {
+  color: keyof typeof ICON_BACKGROUND_COLORS
+}
+
+export const BenefitItemIconContainer = styled.span<BenefitItemIconContainerProps>`
+  display: flex;
+  background: ${(props) => props.theme[ICON_BACKGROUND_COLORS[props.color]]};
+  color: ${(props) => props.theme.background};
+  border-radius: 50%;
+  padding: 0.5rem;
+`
+
+export const BenefitText = styled.span`
+  color: var(--base-text);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 130%;
 `
