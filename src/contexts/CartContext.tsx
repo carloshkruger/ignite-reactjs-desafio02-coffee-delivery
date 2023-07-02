@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useState } from 'react'
+import { ReactNode, createContext, useEffect, useState } from 'react'
 
 export interface Coffee {
   id: number
@@ -29,8 +29,22 @@ interface CartContextProviderProps {
 
 export const CartContext = createContext<CartContextType>({} as CartContextType)
 
+const CART_CACHE_KEY = '@CoffeeDelivery:cart'
+
 export function CartContextProvider({ children }: CartContextProviderProps) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    const cartFromCache = localStorage.getItem(CART_CACHE_KEY)
+    if (cartFromCache) {
+      return JSON.parse(cartFromCache)
+    }
+    return []
+  })
+
+  useEffect(() => {
+    if (cartItems.length) {
+      localStorage.setItem(CART_CACHE_KEY, JSON.stringify(cartItems))
+    }
+  }, [cartItems])
 
   function addToCart(newCartItem: CartItem) {
     const itemExistsInCart = cartItems.some(
@@ -81,6 +95,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
 
   function clearCart() {
     setCartItems([])
+    localStorage.removeItem(CART_CACHE_KEY)
   }
 
   return (
