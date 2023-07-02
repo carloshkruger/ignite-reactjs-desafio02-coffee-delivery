@@ -18,6 +18,8 @@ interface CartContextType {
   cartItems: CartItem[]
   addToCart: (cartItem: CartItem) => void
   removeFromCart: (cartItem: CartItem) => void
+  increaseQuantity: (cartItem: CartItem) => void
+  decreaseQuantity: (cartItem: CartItem) => void
 }
 
 interface CartContextProviderProps {
@@ -53,12 +55,37 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     )
   }
 
+  function increaseQuantity(cartItem: CartItem) {
+    setCartItems((state) =>
+      state.map((item) => {
+        if (item.coffee.id === cartItem.coffee.id) {
+          return { ...item, quantity: cartItem.quantity + 1 }
+        }
+        return item
+      }),
+    )
+  }
+
+  function decreaseQuantity(cartItem: CartItem) {
+    setCartItems((state) =>
+      state.map((item) => {
+        if (item.coffee.id === cartItem.coffee.id) {
+          const newQuantity = cartItem.quantity > 0 ? cartItem.quantity - 1 : 0
+          return { ...item, quantity: newQuantity }
+        }
+        return item
+      }),
+    )
+  }
+
   return (
     <CartContext.Provider
       value={{
         cartItems,
         addToCart,
         removeFromCart,
+        increaseQuantity,
+        decreaseQuantity,
       }}
     >
       {children}

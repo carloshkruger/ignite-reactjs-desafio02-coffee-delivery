@@ -4,25 +4,21 @@ import {
   CreditCard,
   CurrencyDollar,
   MapPinLine,
-  Minus,
   Money,
-  Plus,
-  Trash,
 } from 'phosphor-react'
 import * as zod from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { PaymentOption } from './components/PaymentOption'
-import { CartContext, CartItem } from '../../contexts/CartContext'
+import {
+  CartContext,
+  CartItem as CartItemType,
+} from '../../contexts/CartContext'
 import { currencyFormat } from '../Home/components/CoffeeCard'
 import {
   AddressFormContainer,
   CheckoutContainer,
-  CoffeeCounter,
-  CoffeeCounterButton,
-  CoffeeCounterValue,
   ConfirmOrderButton,
-  DeleteCoffeeButton,
   DeliveryAddressContainer,
   DeliveryAddressSubTitleText,
   DeliveryAddressTitleContainer,
@@ -39,13 +35,7 @@ import {
   PaymentTitleText,
   PaymentTitleTextContainer,
   PurchaseSummaryContainer,
-  SelectedCoffeeActions,
-  SelectedCoffeeItem,
-  SelectedCoffeeItemLeftPart,
   SelectedCoffeeList,
-  SelectedCoffeeName,
-  SelectedCoffeeNameAndActions,
-  SelectedCoffeePrice,
   SelectedCoffeesContainer,
   SelectedCoffeesTitle,
   SummaryItem,
@@ -54,6 +44,7 @@ import {
   SummaryTotalText,
   SummaryTotalValue,
 } from './styles'
+import CartItem from './components/CartItem'
 
 enum PaymentOptionEnum {
   CREDIT_CARD = 'CREDIT_CARD',
@@ -76,7 +67,16 @@ type CheckoutFormData = zod.infer<typeof checkoutFormValidationSchema>
 
 const DELIVERY_FEE = 3.5
 
-const calcItemTotalPrice = (cartItem: CartItem) =>
+interface CheckoutData {
+  address: Omit<CheckoutFormData, 'paymentOption'>
+  paymentOption: PaymentOptionEnum
+  cartItems: {
+    itemId: number
+    quantity: number
+  }[]
+}
+
+const calcItemTotalPrice = (cartItem: CartItemType) =>
   cartItem.coffee.unitPrice * cartItem.quantity
 
 export function Checkout() {
@@ -90,11 +90,27 @@ export function Checkout() {
   const { handleSubmit, register, formState, reset } = checkoutForm
 
   function handleCheckout(data: CheckoutFormData) {
-    console.log(data)
+    const checkoutData: CheckoutData = {
+      address: {
+        cep: data.cep,
+        rua: data.rua,
+        numero: data.numero,
+        bairro: data.bairro,
+        cidade: data.cidade,
+        uf: data.uf,
+        complemento: data.complemento,
+      },
+      paymentOption: data.paymentOption,
+      cartItems: cartItems.map((item) => ({
+        itemId: item.coffee.id,
+        quantity: item.quantity,
+      })),
+    }
+    console.log(checkoutData)
     reset()
   }
 
-  function handleRemoveItemFromCart(item: CartItem) {
+  function handleRemoveItemFromCart(item: CartItemType) {
     removeFromCart(item)
   }
 
@@ -128,7 +144,7 @@ export function Checkout() {
             <div>
               <Input
                 id="cep"
-                type="text"
+                type="number"
                 placeholder="CEP"
                 maxLength={8}
                 {...register('cep')}
@@ -218,35 +234,11 @@ export function Checkout() {
         <SelectedCoffeesTitle>Cafés selecionados</SelectedCoffeesTitle>
         <SelectedCoffeeList>
           {cartItems.map((item) => (
-            <SelectedCoffeeItem key={item.coffee.id}>
-              <SelectedCoffeeItemLeftPart>
-                <img src={item.coffee.imageName} alt="" />
-                <SelectedCoffeeNameAndActions>
-                  <SelectedCoffeeName>{item.coffee.name}</SelectedCoffeeName>
-                  <SelectedCoffeeActions>
-                    <CoffeeCounter>
-                      <CoffeeCounterButton>
-                        <Minus size={14} />
-                      </CoffeeCounterButton>
-                      <CoffeeCounterValue>{item.quantity}</CoffeeCounterValue>
-                      <CoffeeCounterButton>
-                        <Plus size={14} />
-                      </CoffeeCounterButton>
-                    </CoffeeCounter>
-                    <DeleteCoffeeButton
-                      type="button"
-                      onClick={() => handleRemoveItemFromCart(item)}
-                    >
-                      <Trash size={16} />
-                      REMOVER
-                    </DeleteCoffeeButton>
-                  </SelectedCoffeeActions>
-                </SelectedCoffeeNameAndActions>
-              </SelectedCoffeeItemLeftPart>
-              <SelectedCoffeePrice>
-                R$ {currencyFormat.format(calcItemTotalPrice(item))}
-              </SelectedCoffeePrice>
-            </SelectedCoffeeItem>
+            <CartItem
+              key={item.coffee.id}
+              item={item}
+              onRemoveItemFromCart={handleRemoveItemFromCart}
+            />
           ))}
 
           <PurchaseSummaryContainer>
