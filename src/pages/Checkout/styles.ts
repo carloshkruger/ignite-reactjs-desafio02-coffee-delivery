@@ -135,50 +135,6 @@ export const PaymentOptionsContainer = styled.div`
   }
 `
 
-interface PaymentOptionProps {
-  isSelected: boolean
-}
-
-export const PaymentOption = styled.button<PaymentOptionProps>`
-  padding: 1rem;
-  border-radius: 6px;
-  background: ${(props) => props.theme['base-button']};
-  display: flex;
-  gap: 0.75rem;
-  cursor: pointer;
-  border: 0;
-  flex: 1;
-
-  & > svg {
-    color: ${(props) => props.theme.purple};
-  }
-
-  ${(props) =>
-    props.isSelected
-      ? css`
-          background: ${props.theme['purple-light']};
-          border: 1px solid ${props.theme.purple};
-        `
-      : ''}
-
-  &:hover {
-    background: ${(props) => props.theme['base-hover']};
-    color: ${(props) => props.theme['base-subtitle']};
-
-    & > svg {
-      color: ${(props) => props.theme['purple-dark']};
-    }
-  }
-`
-
-export const PaymentOptionText = styled.p`
-  color: ${(props) => props.theme['base-text']};
-  font-size: 0.75rem;
-  font-weight: 400;
-  line-height: 160%;
-  text-transform: uppercase;
-`
-
 export const SelectedCoffeesContainer = styled.div``
 
 export const SelectedCoffeesTitle = styled.p`

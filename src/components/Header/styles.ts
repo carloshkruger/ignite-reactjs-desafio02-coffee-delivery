@@ -46,12 +46,9 @@ export const HeaderContainer = styled.header`
         height: 1.25rem;
         background: ${(props) => props.theme['yellow-dark']};
         color: ${(props) => props.theme.white};
-        color: var(--base-white, #fff);
         text-align: center;
         font-size: 0.75rem;
         font-weight: 700;
-        line-height: 130%;
-        letter-spacing: -0.72px;
         border-radius: 50%;
         display: flex;
         align-items: center;

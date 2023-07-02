@@ -25,8 +25,6 @@ import {
   Input,
   NoCoffeeMessage,
   PaymentContainer,
-  PaymentOption,
-  PaymentOptionText,
   PaymentOptionsContainer,
   PaymentSubTitleText,
   PaymentTitleContainer,
@@ -49,29 +47,54 @@ import {
   SummaryTotalValue,
 } from './styles'
 
-import { FormEvent, useContext } from 'react'
-import { CartContext } from '../../contexts/CartContext'
+import { FormEvent, useContext, useState } from 'react'
+import { CartContext, CartItem } from '../../contexts/CartContext'
 import { currencyFormat } from '../Home/components/CoffeeCard'
+import * as zod from 'zod'
+import { PaymentOption } from './components/PaymentOption'
+
+const checkoutFormValidationSchema = zod.object({
+  cep: zod.string().length(9, 'Informe o CEP'),
+  rua: zod.string().min(1, 'Informe a Rua'),
+  numero: zod.number(),
+  bairro: zod.string().min(1, 'Informe o bairro'),
+  cidade: zod.string().min(1, 'Informe a cidade'),
+  uf: zod.string().length(2),
+})
+
+enum PaymentOptionEnum {
+  CREDIT_CARD = 'CREDIT_CARD',
+  DEBIT_CARD = 'DEBIT_CARD',
+  CASH = 'CASH',
+}
 
 const DELIVERY_FEE = 3.5
 
+const calcItemTotalPrice = (cartItem: CartItem) =>
+  cartItem.coffee.unitPrice * cartItem.quantity
+
 export function Checkout() {
+  const [selectedPaymentOption, setSelectedPaymentOption] =
+    useState<PaymentOptionEnum | null>(null)
   const { cartItems } = useContext(CartContext)
 
   function handleCheckout(event: FormEvent) {
     event.preventDefault()
   }
 
+  function handleCheckPaymentOption(paymentOption: PaymentOptionEnum) {
+    setSelectedPaymentOption(paymentOption)
+  }
+
   const totalItemsPrice = cartItems.reduce(
-    (total, currentItem) =>
-      currentItem.coffee.unitPrice * currentItem.quantity + total,
+    (total, currentItem) => calcItemTotalPrice(currentItem) + total,
     0,
   )
   const totalPrice = totalItemsPrice + DELIVERY_FEE
 
-  if (!cartItems.length) {
-    return <NoCoffeeMessage>Nenhum café selecionado</NoCoffeeMessage>
-  }
+  // if (!cartItems.length) {
+  //   return <NoCoffeeMessage>Nenhum café selecionado</NoCoffeeMessage>
+  // }
 
   return (
     <CheckoutContainer onSubmit={handleCheckout}>
@@ -118,18 +141,21 @@ export function Checkout() {
             </PaymentTitleTextContainer>
           </PaymentTitleContainer>
           <PaymentOptionsContainer>
-            <PaymentOption isSelected={true}>
-              <CreditCard size={16} />
-              <PaymentOptionText>Cartão de crédito</PaymentOptionText>
-            </PaymentOption>
-            <PaymentOption isSelected={false}>
-              <Bank size={16} />
-              <PaymentOptionText>Cartão de débito</PaymentOptionText>
-            </PaymentOption>
-            <PaymentOption isSelected={false}>
-              <Money size={16} />
-              <PaymentOptionText>Dinheiro</PaymentOptionText>
-            </PaymentOption>
+            <PaymentOption
+              icon={<CreditCard />}
+              title="Cartão de Crédito"
+              id={PaymentOptionEnum.CREDIT_CARD}
+            />
+            <PaymentOption
+              icon={<Bank />}
+              title="Cartão de Débito"
+              id={PaymentOptionEnum.DEBIT_CARD}
+            />
+            <PaymentOption
+              icon={<Money />}
+              title="Dinheiro"
+              id={PaymentOptionEnum.CASH}
+            />
           </PaymentOptionsContainer>
         </PaymentContainer>
       </FinishOrderContainer>
@@ -160,8 +186,7 @@ export function Checkout() {
                 </SelectedCoffeeNameAndActions>
               </SelectedCoffeeItemLeftPart>
               <SelectedCoffeePrice>
-                R${' '}
-                {currencyFormat.format(item.quantity * item.coffee.unitPrice)}
+                R$ {currencyFormat.format(calcItemTotalPrice(item))}
               </SelectedCoffeePrice>
             </SelectedCoffeeItem>
           ))}
