@@ -39,20 +39,26 @@ export const AddressFormContainer = styled.div`
   grid-template-columns: 12.5rem 17.25rem 3.75rem;
   gap: 0.75rem;
 
-  .cep {
-    grid-column: 1;
+  @media screen and (min-width: 700px) {
+    .cep {
+      grid-column: 1;
+    }
+    .street {
+      grid-column: span 3;
+    }
+    .complement {
+      grid-column: span 2;
+    }
+    .city {
+      grid-column: span;
+    }
+    .uf {
+      text-transform: uppercase;
+    }
   }
-  .street {
-    grid-column: span 3;
-  }
-  .complement {
-    grid-column: span 2;
-  }
-  .city {
-    grid-column: span;
-  }
-  .uf {
-    text-transform: uppercase;
+
+  @media screen and (max-width: 1120px) {
+    grid-template-columns: 1fr;
   }
 `
 
