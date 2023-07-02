@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 
-export const CheckoutContainer = styled.div`
+export const CheckoutContainer = styled.form`
   padding-top: 3.875rem;
   display: grid;
   grid-template-columns: 40rem 1fr;
@@ -356,4 +356,11 @@ export const ConfirmOrderButton = styled.button`
   &:hover {
     background: ${(props) => props.theme['yellow-dark']};
   }
+`
+
+export const NoCoffeeMessage = styled.div`
+  border-radius: 6px;
+  background: ${(props) => props.theme['base-card']};
+  padding: 2.5rem;
+  text-align: center;
 `

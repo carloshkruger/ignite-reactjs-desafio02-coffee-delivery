@@ -23,6 +23,7 @@ import {
   FinishOrderContainer,
   FinishOrderTitle,
   Input,
+  NoCoffeeMessage,
   PaymentContainer,
   PaymentOption,
   PaymentOptionText,
@@ -48,14 +49,32 @@ import {
   SummaryTotalValue,
 } from './styles'
 
-import { useContext } from 'react'
+import { FormEvent, useContext } from 'react'
 import { CartContext } from '../../contexts/CartContext'
+import { currencyFormat } from '../Home/components/CoffeeCard'
+
+const DELIVERY_FEE = 3.5
 
 export function Checkout() {
   const { cartItems } = useContext(CartContext)
 
+  function handleCheckout(event: FormEvent) {
+    event.preventDefault()
+  }
+
+  const totalItemsPrice = cartItems.reduce(
+    (total, currentItem) =>
+      currentItem.coffee.unitPrice * currentItem.quantity + total,
+    0,
+  )
+  const totalPrice = totalItemsPrice + DELIVERY_FEE
+
+  if (!cartItems.length) {
+    return <NoCoffeeMessage>Nenhum café selecionado</NoCoffeeMessage>
+  }
+
   return (
-    <CheckoutContainer>
+    <CheckoutContainer onSubmit={handleCheckout}>
       <FinishOrderContainer>
         <FinishOrderTitle>Complete seu pedido</FinishOrderTitle>
         <DeliveryAddressContainer>
@@ -140,26 +159,37 @@ export function Checkout() {
                   </SelectedCoffeeActions>
                 </SelectedCoffeeNameAndActions>
               </SelectedCoffeeItemLeftPart>
-              <SelectedCoffeePrice>R$ 9,90</SelectedCoffeePrice>
+              <SelectedCoffeePrice>
+                R${' '}
+                {currencyFormat.format(item.quantity * item.coffee.unitPrice)}
+              </SelectedCoffeePrice>
             </SelectedCoffeeItem>
           ))}
 
           <PurchaseSummaryContainer>
             <SummaryItem>
               <SummaryItemText>Total de itens</SummaryItemText>
-              <SummaryItemValue>R$ 29,70</SummaryItemValue>
+              <SummaryItemValue>
+                R$ {currencyFormat.format(totalItemsPrice)}
+              </SummaryItemValue>
             </SummaryItem>
             <SummaryItem>
               <SummaryItemText>Entrega</SummaryItemText>
-              <SummaryItemValue>R$ 3,50</SummaryItemValue>
+              <SummaryItemValue>
+                R$ {currencyFormat.format(DELIVERY_FEE)}
+              </SummaryItemValue>
             </SummaryItem>
             <SummaryItem>
               <SummaryTotalText>Total</SummaryTotalText>
-              <SummaryTotalValue>R$ 33,20</SummaryTotalValue>
+              <SummaryTotalValue>
+                R$ {currencyFormat.format(totalPrice)}
+              </SummaryTotalValue>
             </SummaryItem>
           </PurchaseSummaryContainer>
 
-          <ConfirmOrderButton>Confirmar Pedido</ConfirmOrderButton>
+          <ConfirmOrderButton type="submit">
+            Confirmar Pedido
+          </ConfirmOrderButton>
         </SelectedCoffeeList>
       </SelectedCoffeesContainer>
     </CheckoutContainer>

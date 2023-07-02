@@ -18,6 +18,12 @@ import {
 } from './styles'
 import { useState } from 'react'
 
+export const currencyFormat = new Intl.NumberFormat('pt-BR', {
+  currency: 'BRL',
+  style: 'decimal',
+  minimumFractionDigits: 2,
+})
+
 interface CoffeeCardProps {
   coffee: Coffee
   onAddItemToCart: (cartItem: CartItem) => void
@@ -40,12 +46,6 @@ export function CoffeeCard({ coffee, onAddItemToCart }: CoffeeCardProps) {
   function handleAddItemToCart(coffee: Coffee) {
     onAddItemToCart({ coffee, quantity })
   }
-
-  const currencyFormat = new Intl.NumberFormat('pt-BR', {
-    currency: 'BRL',
-    style: 'decimal',
-    minimumFractionDigits: 2,
-  })
 
   return (
     <CoffeeItem key={coffee.id}>
