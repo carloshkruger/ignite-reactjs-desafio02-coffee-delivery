@@ -35,14 +35,24 @@ export const DeliveryAddressContainer = styled.div`
 
 export const AddressFormContainer = styled.div`
   margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: 12.5rem 17.25rem 3.75rem;
+  gap: 0.75rem;
 
-  & > div {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
+  .cep {
+    grid-column: 1;
+  }
+  .rua {
+    grid-column: span 3;
+  }
+  .complemento {
+    grid-column: span 2;
+  }
+  .cidade {
+    grid-column: span;
+  }
+  .uf {
+    text-transform: uppercase;
   }
 `
 
