@@ -16,8 +16,13 @@ export const CounterButton = styled.button`
   border: 0;
   background: transparent;
 
-  &:hover {
+  &:not(:disabled):hover {
     color: ${(props) => props.theme['purple-dark']};
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: default;
   }
 `
 

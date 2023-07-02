@@ -14,7 +14,11 @@ export function CoffeeCounter({
 }: CoffeeCounterProps) {
   return (
     <Container>
-      <CounterButton type="button" onClick={onDecreaseQuantity}>
+      <CounterButton
+        disabled={quantity <= 1}
+        type="button"
+        onClick={onDecreaseQuantity}
+      >
         <Minus size={14} />
       </CounterButton>
       <CounterValue disabled value={quantity} />
