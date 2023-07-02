@@ -80,7 +80,7 @@ const calcItemTotalPrice = (cartItem: CartItem) =>
   cartItem.coffee.unitPrice * cartItem.quantity
 
 export function Checkout() {
-  const { cartItems } = useContext(CartContext)
+  const { cartItems, removeFromCart } = useContext(CartContext)
 
   const checkoutForm = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutFormValidationSchema),
@@ -92,6 +92,10 @@ export function Checkout() {
   function handleCheckout(data: CheckoutFormData) {
     console.log(data)
     reset()
+  }
+
+  function handleRemoveItemFromCart(item: CartItem) {
+    removeFromCart(item)
   }
 
   const totalItemsPrice = cartItems.reduce(
@@ -229,7 +233,10 @@ export function Checkout() {
                         <Plus size={14} />
                       </CoffeeCounterButton>
                     </CoffeeCounter>
-                    <DeleteCoffeeButton>
+                    <DeleteCoffeeButton
+                      type="button"
+                      onClick={() => handleRemoveItemFromCart(item)}
+                    >
                       <Trash size={16} />
                       REMOVER
                     </DeleteCoffeeButton>
