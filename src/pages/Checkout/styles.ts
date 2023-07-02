@@ -8,6 +8,7 @@ export const CheckoutContainer = styled.form`
 
   @media screen and (max-width: 1120px) {
     grid-template-columns: 1fr;
+    padding-top: 1rem;
   }
 `
 
@@ -26,6 +27,10 @@ export const DeliveryAddressContainer = styled.div`
   border-radius: 6px;
   background: ${(props) => props.theme['base-card']};
   padding: 2.5rem;
+
+  @media screen and (max-width: 445px) {
+    padding: 1rem;
+  }
 `
 
 export const AddressFormContainer = styled.div`
@@ -95,6 +100,10 @@ export const PaymentContainer = styled.div`
   background: ${(props) => props.theme['base-card']};
   padding: 2.5rem;
   margin-top: 0.75rem;
+
+  @media screen and (max-width: 445px) {
+    padding: 1rem;
+  }
 `
 
 export const PaymentTitleContainer = styled.div`

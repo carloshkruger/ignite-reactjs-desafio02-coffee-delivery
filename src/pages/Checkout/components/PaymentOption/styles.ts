@@ -4,6 +4,7 @@ export const Container = styled.div`
   input {
     visibility: hidden;
     appearance: none;
+    display: none;
   }
 
   input:checked + label div {
