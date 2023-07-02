@@ -65,9 +65,17 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
   }
 
   function removeFromCart(cartItem: CartItem) {
-    setCartItems((state) =>
-      state.filter((item) => item.coffee.id !== cartItem.coffee.id),
-    )
+    setCartItems((state) => {
+      const newState = state.filter(
+        (item) => item.coffee.id !== cartItem.coffee.id,
+      )
+
+      if (!newState.length) {
+        localStorage.removeItem(CART_CACHE_KEY)
+      }
+
+      return newState
+    })
   }
 
   function increaseQuantity(cartItem: CartItem) {
