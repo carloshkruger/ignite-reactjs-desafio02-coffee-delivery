@@ -49,12 +49,12 @@ export function OrderCompleted() {
               <p>
                 Entrega em{' '}
                 <span>
-                  {checkoutData.address.rua}, {checkoutData.address.numero}
+                  {checkoutData.address.street}, {checkoutData.address.number}
                 </span>
               </p>
               <p>
-                {checkoutData.address.bairro} - {checkoutData.address.cidade},{' '}
-                {checkoutData.address.uf}
+                {checkoutData.address.neighborhood} -{' '}
+                {checkoutData.address.city}, {checkoutData.address.uf}
               </p>
             </InfoData>
           </InfoItem>

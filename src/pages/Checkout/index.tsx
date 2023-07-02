@@ -79,12 +79,12 @@ export const paymentOptions: PaymentOptionsListItem[] = [
 
 const checkoutFormValidationSchema = zod.object({
   cep: zod.string().min(8, 'Informe o CEP'),
-  rua: zod.string().min(1, 'Informe a Rua'),
-  numero: zod.number(),
-  bairro: zod.string().min(1, 'Informe o bairro'),
-  cidade: zod.string().min(1, 'Informe a cidade'),
+  street: zod.string().min(1, 'Informe a Rua'),
+  number: zod.number(),
+  neighborhood: zod.string().min(1, 'Informe o bairro'),
+  city: zod.string().min(1, 'Informe a cidade'),
   uf: zod.string().length(2),
-  complemento: zod.string().optional(),
+  complement: zod.string().optional(),
   paymentOption: zod.nativeEnum(PaymentOptionEnum),
 })
 
@@ -119,12 +119,12 @@ export function Checkout() {
     const checkoutData: CheckoutData = {
       address: {
         cep: data.cep,
-        rua: data.rua,
-        numero: data.numero,
-        bairro: data.bairro,
-        cidade: data.cidade,
+        street: data.street,
+        number: data.number,
+        neighborhood: data.neighborhood,
+        city: data.city,
         uf: data.uf,
-        complemento: data.complemento,
+        complement: data.complement,
       },
       paymentOption: data.paymentOption,
       cartItems: cartItems.map((item) => ({
@@ -132,6 +132,7 @@ export function Checkout() {
         quantity: item.quantity,
       })),
     }
+    console.log(checkoutData)
     reset()
     clearCart()
     navigate('/order-completed', {
@@ -179,39 +180,39 @@ export function Checkout() {
               {...register('cep')}
             />
             <Input
-              id="rua"
+              id="street"
               type="text"
               placeholder="Rua"
-              className="rua"
-              {...register('rua')}
+              className="street"
+              {...register('street')}
             />
             <Input
-              id="numero"
+              id="number"
               type="number"
               placeholder="Número"
-              className="numero"
-              {...register('numero', { valueAsNumber: true })}
+              className="number"
+              {...register('number', { valueAsNumber: true })}
             />
             <Input
-              id="complemento"
+              id="complement"
               type="text"
               placeholder="Complemento"
-              className="complemento"
-              {...register('complemento')}
+              className="complement"
+              {...register('complement')}
             />
             <Input
-              id="bairro"
+              id="neighborhood"
               type="text"
               placeholder="Bairro"
-              className="bairro"
-              {...register('bairro')}
+              className="neighborhood"
+              {...register('neighborhood')}
             />
             <Input
-              id="cidade"
+              id="city"
               type="text"
               placeholder="Cidade"
-              className="cidade"
-              {...register('cidade')}
+              className="city"
+              {...register('city')}
             />
             <Input
               id="uf"

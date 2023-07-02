@@ -42,13 +42,13 @@ export const AddressFormContainer = styled.div`
   .cep {
     grid-column: 1;
   }
-  .rua {
+  .street {
     grid-column: span 3;
   }
-  .complemento {
+  .complement {
     grid-column: span 2;
   }
-  .cidade {
+  .city {
     grid-column: span;
   }
   .uf {
