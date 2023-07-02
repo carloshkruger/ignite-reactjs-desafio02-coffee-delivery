@@ -22,6 +22,7 @@ export const HeaderContainer = styled.header`
     }
 
     & > div > a {
+      position: relative;
       width: 3rem;
       height: 3rem;
 
@@ -38,6 +39,26 @@ export const HeaderContainer = styled.header`
       &:hover {
         background: ${(props) => props.theme['yellow-dark']};
         color: ${(props) => props.theme['yellow-light']};
+      }
+
+      & > span {
+        width: 1.25rem;
+        height: 1.25rem;
+        background: ${(props) => props.theme['yellow-dark']};
+        color: ${(props) => props.theme.white};
+        color: var(--base-white, #fff);
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+        line-height: 130%;
+        letter-spacing: -0.72px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: -0.75rem;
+        left: 2.25rem;
+        position: absolute;
       }
     }
   }
