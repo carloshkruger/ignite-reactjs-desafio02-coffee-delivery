@@ -86,38 +86,6 @@ export const CoffeeShopContainer = styled.div`
   gap: 0.5rem;
 `
 
-export const CoffeeCounter = styled.div`
-  display: flex;
-  padding: 0.5rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.25rem;
-  border-radius: 6px;
-  background: ${(props) => props.theme['base-button']};
-`
-
-export const CoffeeCounterButton = styled.button`
-  color: ${(props) => props.theme.purple};
-  cursor: pointer;
-  border: 0;
-  background: transparent;
-
-  &:hover {
-    color: ${(props) => props.theme['purple-dark']};
-  }
-`
-
-export const CoffeeCounterValue = styled.input`
-  width: 1.25rem;
-  color: ${(props) => props.theme['base-title']};
-  text-align: center;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 130%;
-  background: transparent;
-  border: 0;
-`
-
 export const BuyCoffeeButton = styled.button`
   border: 0;
   padding: 0.5rem;

@@ -1,10 +1,9 @@
-import { Minus, Plus, ShoppingCart } from 'phosphor-react'
+import { useState } from 'react'
+import { ShoppingCart } from 'phosphor-react'
 import { CartItem, Coffee } from '../../../../contexts/CartContext'
+import { CoffeeCounter } from '../../../../components/CoffeeCounter'
 import {
   BuyCoffeeButton,
-  CoffeeCounter,
-  CoffeeCounterButton,
-  CoffeeCounterValue,
   CoffeeDescription,
   CoffeeFooter,
   CoffeeItem,
@@ -16,7 +15,6 @@ import {
   Tag,
   TagsContainer,
 } from './styles'
-import { useState } from 'react'
 
 export const currencyFormat = new Intl.NumberFormat('pt-BR', {
   currency: 'BRL',
@@ -47,6 +45,8 @@ export function CoffeeCard({ coffee, onAddItemToCart }: CoffeeCardProps) {
     onAddItemToCart({ coffee, quantity })
   }
 
+  const formattedPrice = currencyFormat.format(coffee.unitPrice)
+
   return (
     <CoffeeItem key={coffee.id}>
       <img src={coffee.imageName} alt="" />
@@ -60,20 +60,14 @@ export function CoffeeCard({ coffee, onAddItemToCart }: CoffeeCardProps) {
       <CoffeeFooter>
         <CoffeePriceContainer>
           <CoffeePriceCurrency>R$</CoffeePriceCurrency>
-          <CoffeePriceValue>
-            {currencyFormat.format(coffee.unitPrice)}
-          </CoffeePriceValue>
+          <CoffeePriceValue>{formattedPrice}</CoffeePriceValue>
         </CoffeePriceContainer>
         <CoffeeShopContainer>
-          <CoffeeCounter>
-            <CoffeeCounterButton type="button" onClick={handleDecreaseQuantity}>
-              <Minus size={14} />
-            </CoffeeCounterButton>
-            <CoffeeCounterValue disabled value={quantity} />
-            <CoffeeCounterButton type="button" onClick={handleIncreaseQuantity}>
-              <Plus size={14} />
-            </CoffeeCounterButton>
-          </CoffeeCounter>
+          <CoffeeCounter
+            quantity={quantity}
+            onIncreaseQuantity={handleIncreaseQuantity}
+            onDecreaseQuantity={handleDecreaseQuantity}
+          />
           <BuyCoffeeButton
             onClick={() => handleAddItemToCart(coffee)}
             title="Adicionar ao carrinho"
