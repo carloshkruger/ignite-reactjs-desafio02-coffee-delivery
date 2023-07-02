@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { ReactNode, useContext } from 'react'
 import {
   Bank,
   CreditCard,
@@ -45,12 +45,37 @@ import {
   SummaryTotalValue,
 } from './styles'
 import CartItem from './components/CartItem'
+import { useNavigate } from 'react-router-dom'
 
-enum PaymentOptionEnum {
+export enum PaymentOptionEnum {
   CREDIT_CARD = 'CREDIT_CARD',
   DEBIT_CARD = 'DEBIT_CARD',
   CASH = 'CASH',
 }
+
+interface PaymentOptionsListItem {
+  id: PaymentOptionEnum
+  title: string
+  icon: ReactNode
+}
+
+export const paymentOptions: PaymentOptionsListItem[] = [
+  {
+    id: PaymentOptionEnum.CREDIT_CARD,
+    title: 'Cartão de Crédito',
+    icon: <CreditCard />,
+  },
+  {
+    id: PaymentOptionEnum.DEBIT_CARD,
+    title: 'Cartão de Débito',
+    icon: <Bank />,
+  },
+  {
+    id: PaymentOptionEnum.CASH,
+    title: 'Dinheiro',
+    icon: <Money />,
+  },
+]
 
 const checkoutFormValidationSchema = zod.object({
   cep: zod.string().min(8, 'Informe o CEP'),
@@ -67,7 +92,7 @@ type CheckoutFormData = zod.infer<typeof checkoutFormValidationSchema>
 
 const DELIVERY_FEE = 3.5
 
-interface CheckoutData {
+export interface CheckoutData {
   address: Omit<CheckoutFormData, 'paymentOption'>
   paymentOption: PaymentOptionEnum
   cartItems: {
@@ -80,14 +105,15 @@ const calcItemTotalPrice = (cartItem: CartItemType) =>
   cartItem.coffee.unitPrice * cartItem.quantity
 
 export function Checkout() {
-  const { cartItems, removeFromCart } = useContext(CartContext)
+  const { cartItems, clearCart, removeFromCart } = useContext(CartContext)
+  const navigate = useNavigate()
 
   const checkoutForm = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutFormValidationSchema),
     defaultValues: {},
   })
 
-  const { handleSubmit, register, formState, reset } = checkoutForm
+  const { handleSubmit, register, reset } = checkoutForm
 
   function handleCheckout(data: CheckoutFormData) {
     const checkoutData: CheckoutData = {
@@ -106,8 +132,11 @@ export function Checkout() {
         quantity: item.quantity,
       })),
     }
-    console.log(checkoutData)
     reset()
+    clearCart()
+    navigate('/order-completed', {
+      state: checkoutData,
+    })
   }
 
   function handleRemoveItemFromCart(item: CartItemType) {
@@ -120,9 +149,9 @@ export function Checkout() {
   )
   const totalPrice = totalItemsPrice + DELIVERY_FEE
 
-  // if (!cartItems.length) {
-  //   return <NoCoffeeMessage>Nenhum café selecionado</NoCoffeeMessage>
-  // }
+  if (!cartItems.length) {
+    return <NoCoffeeMessage>Nenhum café selecionado</NoCoffeeMessage>
+  }
 
   return (
     <CheckoutContainer onSubmit={handleSubmit(handleCheckout)}>
@@ -206,27 +235,16 @@ export function Checkout() {
             </PaymentTitleTextContainer>
           </PaymentTitleContainer>
           <PaymentOptionsContainer>
-            <PaymentOption
-              icon={<CreditCard />}
-              title="Cartão de Crédito"
-              value={PaymentOptionEnum.CREDIT_CARD}
-              id={PaymentOptionEnum.CREDIT_CARD}
-              {...register('paymentOption')}
-            />
-            <PaymentOption
-              icon={<Bank />}
-              title="Cartão de Débito"
-              value={PaymentOptionEnum.DEBIT_CARD}
-              id={PaymentOptionEnum.DEBIT_CARD}
-              {...register('paymentOption')}
-            />
-            <PaymentOption
-              icon={<Money />}
-              title="Dinheiro"
-              value={PaymentOptionEnum.CASH}
-              id={PaymentOptionEnum.CASH}
-              {...register('paymentOption')}
-            />
+            {paymentOptions.map((option) => (
+              <PaymentOption
+                key={option.id}
+                icon={option.icon}
+                title={option.title}
+                value={option.id}
+                id={option.id}
+                {...register('paymentOption')}
+              />
+            ))}
           </PaymentOptionsContainer>
         </PaymentContainer>
       </FinishOrderContainer>

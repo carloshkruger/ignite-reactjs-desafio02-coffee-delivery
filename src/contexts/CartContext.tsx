@@ -20,6 +20,7 @@ interface CartContextType {
   removeFromCart: (cartItem: CartItem) => void
   increaseQuantity: (cartItem: CartItem) => void
   decreaseQuantity: (cartItem: CartItem) => void
+  clearCart: () => void
 }
 
 interface CartContextProviderProps {
@@ -78,6 +79,10 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
     )
   }
 
+  function clearCart() {
+    setCartItems([])
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -86,6 +91,7 @@ export function CartContextProvider({ children }: CartContextProviderProps) {
         removeFromCart,
         increaseQuantity,
         decreaseQuantity,
+        clearCart,
       }}
     >
       {children}
