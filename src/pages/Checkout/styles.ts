@@ -26,18 +26,18 @@ export const DeliveryAddressContainer = styled.div`
   border-radius: 6px;
   background: ${(props) => props.theme['base-card']};
   padding: 2.5rem;
+`
 
-  & > form {
-    margin-top: 2rem;
+export const AddressFormContainer = styled.div`
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  & > div {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 1rem;
-
-    & > div {
-      display: flex;
-      flex-direction: row;
-      gap: 1rem;
-    }
   }
 `
 

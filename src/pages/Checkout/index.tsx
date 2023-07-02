@@ -1,3 +1,4 @@
+import { useContext } from 'react'
 import {
   Bank,
   CreditCard,
@@ -8,7 +9,14 @@ import {
   Plus,
   Trash,
 } from 'phosphor-react'
+import * as zod from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { PaymentOption } from './components/PaymentOption'
+import { CartContext, CartItem } from '../../contexts/CartContext'
+import { currencyFormat } from '../Home/components/CoffeeCard'
 import {
+  AddressFormContainer,
   CheckoutContainer,
   CoffeeCounter,
   CoffeeCounterButton,
@@ -47,26 +55,24 @@ import {
   SummaryTotalValue,
 } from './styles'
 
-import { FormEvent, useContext, useState } from 'react'
-import { CartContext, CartItem } from '../../contexts/CartContext'
-import { currencyFormat } from '../Home/components/CoffeeCard'
-import * as zod from 'zod'
-import { PaymentOption } from './components/PaymentOption'
-
-const checkoutFormValidationSchema = zod.object({
-  cep: zod.string().length(9, 'Informe o CEP'),
-  rua: zod.string().min(1, 'Informe a Rua'),
-  numero: zod.number(),
-  bairro: zod.string().min(1, 'Informe o bairro'),
-  cidade: zod.string().min(1, 'Informe a cidade'),
-  uf: zod.string().length(2),
-})
-
 enum PaymentOptionEnum {
   CREDIT_CARD = 'CREDIT_CARD',
   DEBIT_CARD = 'DEBIT_CARD',
   CASH = 'CASH',
 }
+
+const checkoutFormValidationSchema = zod.object({
+  cep: zod.string().min(8, 'Informe o CEP'),
+  rua: zod.string().min(1, 'Informe a Rua'),
+  numero: zod.number(),
+  bairro: zod.string().min(1, 'Informe o bairro'),
+  cidade: zod.string().min(1, 'Informe a cidade'),
+  uf: zod.string().length(2),
+  complemento: zod.string().optional(),
+  paymentOption: zod.nativeEnum(PaymentOptionEnum),
+})
+
+type CheckoutFormData = zod.infer<typeof checkoutFormValidationSchema>
 
 const DELIVERY_FEE = 3.5
 
@@ -74,16 +80,18 @@ const calcItemTotalPrice = (cartItem: CartItem) =>
   cartItem.coffee.unitPrice * cartItem.quantity
 
 export function Checkout() {
-  const [selectedPaymentOption, setSelectedPaymentOption] =
-    useState<PaymentOptionEnum | null>(null)
   const { cartItems } = useContext(CartContext)
 
-  function handleCheckout(event: FormEvent) {
-    event.preventDefault()
-  }
+  const checkoutForm = useForm<CheckoutFormData>({
+    resolver: zodResolver(checkoutFormValidationSchema),
+    defaultValues: {},
+  })
 
-  function handleCheckPaymentOption(paymentOption: PaymentOptionEnum) {
-    setSelectedPaymentOption(paymentOption)
+  const { handleSubmit, register, formState, reset } = checkoutForm
+
+  function handleCheckout(data: CheckoutFormData) {
+    console.log(data)
+    reset()
   }
 
   const totalItemsPrice = cartItems.reduce(
@@ -97,7 +105,7 @@ export function Checkout() {
   // }
 
   return (
-    <CheckoutContainer onSubmit={handleCheckout}>
+    <CheckoutContainer onSubmit={handleSubmit(handleCheckout)}>
       <FinishOrderContainer>
         <FinishOrderTitle>Complete seu pedido</FinishOrderTitle>
         <DeliveryAddressContainer>
@@ -112,23 +120,60 @@ export function Checkout() {
               </DeliveryAddressSubTitleText>
             </DeliveryAddressTitleTextContainer>
           </DeliveryAddressTitleContainer>
-          <form>
+          <AddressFormContainer>
             <div>
-              <Input type="text" placeholder="CEP" />
+              <Input
+                id="cep"
+                type="text"
+                placeholder="CEP"
+                maxLength={8}
+                {...register('cep')}
+              />
             </div>
             <div>
-              <Input type="text" placeholder="Rua" />
+              <Input
+                id="rua"
+                type="text"
+                placeholder="Rua"
+                {...register('rua')}
+              />
             </div>
             <div>
-              <Input type="text" placeholder="Número" />
-              <Input type="text" placeholder="Complemento" />
+              <Input
+                id="numero"
+                type="number"
+                placeholder="Número"
+                {...register('numero', { valueAsNumber: true })}
+              />
+              <Input
+                id="complemento"
+                type="text"
+                placeholder="Complemento"
+                {...register('complemento')}
+              />
             </div>
             <div>
-              <Input type="text" placeholder="Bairro" />
-              <Input type="text" placeholder="Cidade" />
-              <Input type="text" placeholder="UF" />
+              <Input
+                id="bairro"
+                type="text"
+                placeholder="Bairro"
+                {...register('bairro')}
+              />
+              <Input
+                id="cidade"
+                type="text"
+                placeholder="Cidade"
+                {...register('cidade')}
+              />
+              <Input
+                id="uf"
+                type="text"
+                placeholder="UF"
+                maxLength={2}
+                {...register('uf')}
+              />
             </div>
-          </form>
+          </AddressFormContainer>
         </DeliveryAddressContainer>
         <PaymentContainer>
           <PaymentTitleContainer>
@@ -144,17 +189,23 @@ export function Checkout() {
             <PaymentOption
               icon={<CreditCard />}
               title="Cartão de Crédito"
+              value={PaymentOptionEnum.CREDIT_CARD}
               id={PaymentOptionEnum.CREDIT_CARD}
+              {...register('paymentOption')}
             />
             <PaymentOption
               icon={<Bank />}
               title="Cartão de Débito"
+              value={PaymentOptionEnum.DEBIT_CARD}
               id={PaymentOptionEnum.DEBIT_CARD}
+              {...register('paymentOption')}
             />
             <PaymentOption
               icon={<Money />}
               title="Dinheiro"
+              value={PaymentOptionEnum.CASH}
               id={PaymentOptionEnum.CASH}
+              {...register('paymentOption')}
             />
           </PaymentOptionsContainer>
         </PaymentContainer>
