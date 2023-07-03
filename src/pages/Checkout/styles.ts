@@ -39,6 +39,10 @@ export const AddressFormContainer = styled.div`
   grid-template-columns: 12.5rem 17.25rem 3.75rem;
   gap: 0.75rem;
 
+  .uf input {
+    text-transform: uppercase;
+  }
+
   @media screen and (min-width: 700px) {
     .cep {
       grid-column: 1;
@@ -51,9 +55,6 @@ export const AddressFormContainer = styled.div`
     }
     .city {
       grid-column: span;
-    }
-    .uf {
-      text-transform: uppercase;
     }
   }
 
@@ -88,27 +89,6 @@ export const DeliveryAddressSubTitleText = styled.p`
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 130%;
-`
-
-export const Input = styled.input`
-  border-radius: 4px;
-  border: 1px solid ${(props) => props.theme['base-button']};
-  background: ${(props) => props.theme['base-input']};
-  padding: 0.75rem;
-  color: ${(props) => props.theme['base-text']};
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 130%;
-  width: 100%;
-
-  &::placeholder {
-    color: ${(props) => props.theme['base-label']};
-  }
-
-  &:focus,
-  &:not(:placeholder-shown) {
-    outline: 1px solid ${(props) => props.theme['yellow-dark']};
-  }
 `
 
 export const PaymentContainer = styled.div`

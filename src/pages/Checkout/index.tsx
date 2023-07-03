@@ -9,11 +9,14 @@ import {
 import * as zod from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PaymentOption } from './components/PaymentOption'
+import { useNavigate } from 'react-router-dom'
 import {
   CartContext,
   CartItem as CartItemType,
 } from '../../contexts/CartContext'
+import { PaymentOption } from './components/PaymentOption'
+import CartItem from './components/CartItem'
+import { Input } from '../../components/Input'
 import { currencyFormat } from '../Home/components/CoffeeCard'
 import {
   AddressFormContainer,
@@ -26,7 +29,6 @@ import {
   DeliveryAddressTitleTextContainer,
   FinishOrderContainer,
   FinishOrderTitle,
-  Input,
   NoCoffeeMessage,
   PaymentContainer,
   PaymentOptionsContainer,
@@ -44,8 +46,6 @@ import {
   SummaryTotalText,
   SummaryTotalValue,
 } from './styles'
-import CartItem from './components/CartItem'
-import { useNavigate } from 'react-router-dom'
 
 export enum PaymentOptionEnum {
   CREDIT_CARD = 'CREDIT_CARD',
@@ -80,10 +80,13 @@ export const paymentOptions: PaymentOptionsListItem[] = [
 const checkoutFormValidationSchema = zod.object({
   cep: zod.string().min(8, 'Informe o CEP'),
   street: zod.string().min(1, 'Informe a Rua'),
-  number: zod.number(),
+  number: zod.number({
+    required_error: 'Informe o número',
+    invalid_type_error: 'Informe o número',
+  }),
   neighborhood: zod.string().min(1, 'Informe o bairro'),
   city: zod.string().min(1, 'Informe a cidade'),
-  uf: zod.string().length(2),
+  uf: zod.string().length(2, 'Informe UF'),
   complement: zod.string().optional(),
   paymentOption: zod.nativeEnum(PaymentOptionEnum),
 })
@@ -101,9 +104,6 @@ export interface CheckoutData {
   }[]
 }
 
-const calcItemTotalPrice = (cartItem: CartItemType) =>
-  cartItem.coffee.unitPrice * cartItem.quantity
-
 export function Checkout() {
   const { cartItems, clearCart, removeFromCart } = useContext(CartContext)
   const navigate = useNavigate()
@@ -113,7 +113,7 @@ export function Checkout() {
     defaultValues: {},
   })
 
-  const { handleSubmit, register, reset } = checkoutForm
+  const { handleSubmit, register, reset, formState } = checkoutForm
 
   function handleCheckout(data: CheckoutFormData) {
     const checkoutData: CheckoutData = {
@@ -145,7 +145,8 @@ export function Checkout() {
   }
 
   const totalItemsPrice = cartItems.reduce(
-    (total, currentItem) => calcItemTotalPrice(currentItem) + total,
+    (total, currentItem) =>
+      currentItem.coffee.unitPrice * currentItem.quantity + total,
     0,
   )
   const totalPrice = totalItemsPrice + DELIVERY_FEE
@@ -177,6 +178,7 @@ export function Checkout() {
               placeholder="CEP"
               maxLength={8}
               className="cep"
+              error={formState.errors.cep?.message}
               {...register('cep')}
             />
             <Input
@@ -184,6 +186,7 @@ export function Checkout() {
               type="text"
               placeholder="Rua"
               className="street"
+              error={formState.errors.street?.message}
               {...register('street')}
             />
             <Input
@@ -191,6 +194,7 @@ export function Checkout() {
               type="number"
               placeholder="Número"
               className="number"
+              error={formState.errors.number?.message}
               {...register('number', { valueAsNumber: true })}
             />
             <Input
@@ -198,6 +202,7 @@ export function Checkout() {
               type="text"
               placeholder="Complemento"
               className="complement"
+              error={formState.errors.complement?.message}
               {...register('complement')}
             />
             <Input
@@ -205,6 +210,7 @@ export function Checkout() {
               type="text"
               placeholder="Bairro"
               className="neighborhood"
+              error={formState.errors.neighborhood?.message}
               {...register('neighborhood')}
             />
             <Input
@@ -212,6 +218,7 @@ export function Checkout() {
               type="text"
               placeholder="Cidade"
               className="city"
+              error={formState.errors.city?.message}
               {...register('city')}
             />
             <Input
@@ -220,6 +227,7 @@ export function Checkout() {
               placeholder="UF"
               maxLength={2}
               className="uf"
+              error={formState.errors.uf?.message}
               {...register('uf')}
             />
           </AddressFormContainer>
