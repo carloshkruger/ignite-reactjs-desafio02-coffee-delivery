@@ -130,22 +130,6 @@ export const PaymentSubTitleText = styled.p`
   line-height: 130%;
 `
 
-export const PaymentOptionsContainer = styled.div`
-  margin-top: 2rem;
-  display: flex;
-  gap: 0.75rem;
-
-  @media screen and (max-width: 510px) {
-    flex-direction: column;
-  }
-`
-
-export const PaymentOptionErrorMessage = styled.span`
-  font-size: 0.75rem;
-  color: ${(props) => props.theme.danger};
-  padding-top: 1px;
-`
-
 export const SelectedCoffeesContainer = styled.div``
 
 export const SelectedCoffeesTitle = styled.p`
