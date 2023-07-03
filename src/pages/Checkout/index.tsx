@@ -1,6 +1,5 @@
 import { useContext } from 'react'
 import { CurrencyDollar, MapPinLine } from 'phosphor-react'
-import * as zod from 'zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
@@ -9,14 +8,17 @@ import {
   CartItem as CartItemType,
 } from '../../contexts/CartContext'
 import CartItem from './components/CartItem'
-import { Input } from '../../components/Input'
 import { currencyFormat } from '../Home/components/CoffeeCard'
 import {
   PaymentOptionEnum,
   PaymentOptionList,
 } from './components/PaymentOptionList'
 import {
-  AddressFormContainer,
+  AddressForm,
+  CheckoutFormData,
+  checkoutFormValidationSchema,
+} from './components/AddressForm'
+import {
   CheckoutContainer,
   ConfirmOrderButton,
   DeliveryAddressContainer,
@@ -43,25 +45,6 @@ import {
   SummaryTotalValue,
 } from './styles'
 
-const checkoutFormValidationSchema = zod.object({
-  cep: zod.string().min(8, 'Informe o CEP'),
-  street: zod.string().min(1, 'Informe a Rua'),
-  number: zod.number({
-    required_error: 'Informe o número',
-    invalid_type_error: 'Informe o número',
-  }),
-  neighborhood: zod.string().min(1, 'Informe o bairro'),
-  city: zod.string().min(1, 'Informe a cidade'),
-  uf: zod.string().length(2, 'Informe UF'),
-  complement: zod.string().optional(),
-  paymentOption: zod.nativeEnum(PaymentOptionEnum, {
-    required_error: 'Selecione a forma de pagamento',
-    invalid_type_error: 'Selecione a forma de pagamento',
-  }),
-})
-
-type CheckoutFormData = zod.infer<typeof checkoutFormValidationSchema>
-
 const DELIVERY_FEE = 3.5
 
 export interface CheckoutData {
@@ -82,7 +65,7 @@ export function Checkout() {
     defaultValues: {},
   })
 
-  const { handleSubmit, register, reset, formState } = checkoutForm
+  const { handleSubmit, reset, formState } = checkoutForm
 
   function handleCheckout(data: CheckoutFormData) {
     const checkoutData: CheckoutData = {
@@ -141,66 +124,7 @@ export function Checkout() {
                 </DeliveryAddressSubTitleText>
               </DeliveryAddressTitleTextContainer>
             </DeliveryAddressTitleContainer>
-            <AddressFormContainer>
-              <Input
-                id="cep"
-                type="number"
-                placeholder="CEP"
-                maxLength={8}
-                className="cep"
-                error={formState.errors.cep?.message}
-                {...register('cep')}
-              />
-              <Input
-                id="street"
-                type="text"
-                placeholder="Rua"
-                className="street"
-                error={formState.errors.street?.message}
-                {...register('street')}
-              />
-              <Input
-                id="number"
-                type="number"
-                placeholder="Número"
-                className="number"
-                error={formState.errors.number?.message}
-                {...register('number', { valueAsNumber: true })}
-              />
-              <Input
-                id="complement"
-                type="text"
-                placeholder="Complemento"
-                className="complement"
-                error={formState.errors.complement?.message}
-                {...register('complement')}
-              />
-              <Input
-                id="neighborhood"
-                type="text"
-                placeholder="Bairro"
-                className="neighborhood"
-                error={formState.errors.neighborhood?.message}
-                {...register('neighborhood')}
-              />
-              <Input
-                id="city"
-                type="text"
-                placeholder="Cidade"
-                className="city"
-                error={formState.errors.city?.message}
-                {...register('city')}
-              />
-              <Input
-                id="uf"
-                type="text"
-                placeholder="UF"
-                maxLength={2}
-                className="uf"
-                error={formState.errors.uf?.message}
-                {...register('uf')}
-              />
-            </AddressFormContainer>
+            <AddressForm />
           </DeliveryAddressContainer>
           <PaymentContainer>
             <PaymentTitleContainer>
