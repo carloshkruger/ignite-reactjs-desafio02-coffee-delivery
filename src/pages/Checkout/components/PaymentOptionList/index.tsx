@@ -37,7 +37,7 @@ interface PaymentOptionListProps {
   error?: string
 }
 
-const PaymentOptionList = ({ error }: PaymentOptionListProps) => {
+export function PaymentOptionList({ error }: PaymentOptionListProps) {
   const hasError = !!error
 
   return (
@@ -57,7 +57,3 @@ const PaymentOptionList = ({ error }: PaymentOptionListProps) => {
     </>
   )
 }
-
-PaymentOptionList.displayName = PaymentOptionList.name
-
-export { PaymentOptionList }
