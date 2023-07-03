@@ -140,6 +140,12 @@ export const PaymentOptionsContainer = styled.div`
   }
 `
 
+export const PaymentOptionErrorMessage = styled.span`
+  font-size: 0.75rem;
+  color: ${(props) => props.theme.danger};
+  padding-top: 1px;
+`
+
 export const SelectedCoffeesContainer = styled.div``
 
 export const SelectedCoffeesTitle = styled.p`

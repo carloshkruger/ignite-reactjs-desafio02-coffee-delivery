@@ -31,6 +31,7 @@ import {
   FinishOrderTitle,
   NoCoffeeMessage,
   PaymentContainer,
+  PaymentOptionErrorMessage,
   PaymentOptionsContainer,
   PaymentSubTitleText,
   PaymentTitleContainer,
@@ -88,7 +89,10 @@ const checkoutFormValidationSchema = zod.object({
   city: zod.string().min(1, 'Informe a cidade'),
   uf: zod.string().length(2, 'Informe UF'),
   complement: zod.string().optional(),
-  paymentOption: zod.nativeEnum(PaymentOptionEnum),
+  paymentOption: zod.nativeEnum(PaymentOptionEnum, {
+    required_error: 'Selecione a forma de pagamento',
+    invalid_type_error: 'Selecione a forma de pagamento',
+  }),
 })
 
 type CheckoutFormData = zod.infer<typeof checkoutFormValidationSchema>
@@ -254,6 +258,11 @@ export function Checkout() {
               />
             ))}
           </PaymentOptionsContainer>
+          {!!formState.errors.paymentOption?.message && (
+            <PaymentOptionErrorMessage>
+              {formState.errors.paymentOption?.message}
+            </PaymentOptionErrorMessage>
+          )}
         </PaymentContainer>
       </FinishOrderContainer>
       <SelectedCoffeesContainer>
