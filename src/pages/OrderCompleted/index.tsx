@@ -10,8 +10,9 @@ import {
   TitleContainer,
 } from './styles'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { CheckoutData, paymentOptions } from '../Checkout'
+import { CheckoutData } from '../Checkout'
 import { useEffect } from 'react'
+import { paymentOptions } from '../Checkout/components/PaymentOptionList'
 
 interface Location {
   state: CheckoutData

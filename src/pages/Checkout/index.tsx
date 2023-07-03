@@ -1,23 +1,20 @@
-import { ReactNode, useContext } from 'react'
-import {
-  Bank,
-  CreditCard,
-  CurrencyDollar,
-  MapPinLine,
-  Money,
-} from 'phosphor-react'
+import { useContext } from 'react'
+import { CurrencyDollar, MapPinLine } from 'phosphor-react'
 import * as zod from 'zod'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
 import {
   CartContext,
   CartItem as CartItemType,
 } from '../../contexts/CartContext'
-import { PaymentOption } from './components/PaymentOption'
 import CartItem from './components/CartItem'
 import { Input } from '../../components/Input'
 import { currencyFormat } from '../Home/components/CoffeeCard'
+import {
+  PaymentOptionEnum,
+  PaymentOptionList,
+} from './components/PaymentOptionList'
 import {
   AddressFormContainer,
   CheckoutContainer,
@@ -31,8 +28,6 @@ import {
   FinishOrderTitle,
   NoCoffeeMessage,
   PaymentContainer,
-  PaymentOptionErrorMessage,
-  PaymentOptionsContainer,
   PaymentSubTitleText,
   PaymentTitleContainer,
   PaymentTitleText,
@@ -47,36 +42,6 @@ import {
   SummaryTotalText,
   SummaryTotalValue,
 } from './styles'
-
-export enum PaymentOptionEnum {
-  CREDIT_CARD = 'CREDIT_CARD',
-  DEBIT_CARD = 'DEBIT_CARD',
-  CASH = 'CASH',
-}
-
-interface PaymentOptionsListItem {
-  id: PaymentOptionEnum
-  title: string
-  icon: ReactNode
-}
-
-export const paymentOptions: PaymentOptionsListItem[] = [
-  {
-    id: PaymentOptionEnum.CREDIT_CARD,
-    title: 'Cartão de Crédito',
-    icon: <CreditCard />,
-  },
-  {
-    id: PaymentOptionEnum.DEBIT_CARD,
-    title: 'Cartão de Débito',
-    icon: <Bank />,
-  },
-  {
-    id: PaymentOptionEnum.CASH,
-    title: 'Dinheiro',
-    icon: <Money />,
-  },
-]
 
 const checkoutFormValidationSchema = zod.object({
   cep: zod.string().min(8, 'Informe o CEP'),
@@ -162,108 +127,97 @@ export function Checkout() {
   return (
     <CheckoutContainer onSubmit={handleSubmit(handleCheckout)}>
       <FinishOrderContainer>
-        <FinishOrderTitle>Complete seu pedido</FinishOrderTitle>
-        <DeliveryAddressContainer>
-          <DeliveryAddressTitleContainer>
-            <MapPinLine size={22} />
-            <DeliveryAddressTitleTextContainer>
-              <DeliveryAddressTitleText>
-                Endereço de Entrega
-              </DeliveryAddressTitleText>
-              <DeliveryAddressSubTitleText>
-                Informe o endereço onde deseja receber seu pedido
-              </DeliveryAddressSubTitleText>
-            </DeliveryAddressTitleTextContainer>
-          </DeliveryAddressTitleContainer>
-          <AddressFormContainer>
-            <Input
-              id="cep"
-              type="number"
-              placeholder="CEP"
-              maxLength={8}
-              className="cep"
-              error={formState.errors.cep?.message}
-              {...register('cep')}
-            />
-            <Input
-              id="street"
-              type="text"
-              placeholder="Rua"
-              className="street"
-              error={formState.errors.street?.message}
-              {...register('street')}
-            />
-            <Input
-              id="number"
-              type="number"
-              placeholder="Número"
-              className="number"
-              error={formState.errors.number?.message}
-              {...register('number', { valueAsNumber: true })}
-            />
-            <Input
-              id="complement"
-              type="text"
-              placeholder="Complemento"
-              className="complement"
-              error={formState.errors.complement?.message}
-              {...register('complement')}
-            />
-            <Input
-              id="neighborhood"
-              type="text"
-              placeholder="Bairro"
-              className="neighborhood"
-              error={formState.errors.neighborhood?.message}
-              {...register('neighborhood')}
-            />
-            <Input
-              id="city"
-              type="text"
-              placeholder="Cidade"
-              className="city"
-              error={formState.errors.city?.message}
-              {...register('city')}
-            />
-            <Input
-              id="uf"
-              type="text"
-              placeholder="UF"
-              maxLength={2}
-              className="uf"
-              error={formState.errors.uf?.message}
-              {...register('uf')}
-            />
-          </AddressFormContainer>
-        </DeliveryAddressContainer>
-        <PaymentContainer>
-          <PaymentTitleContainer>
-            <CurrencyDollar size={22} />
-            <PaymentTitleTextContainer>
-              <PaymentTitleText>Pagamento</PaymentTitleText>
-              <PaymentSubTitleText>
-                O pagamento é feito na entrega. Escolha a forma que deseja pagar
-              </PaymentSubTitleText>
-            </PaymentTitleTextContainer>
-          </PaymentTitleContainer>
-          <PaymentOptionsContainer>
-            {paymentOptions.map((option) => (
-              <PaymentOption
-                key={option.id}
-                icon={option.icon}
-                title={option.title}
-                value={option.id}
-                id={option.id}
-                {...register('paymentOption')}
+        <FormProvider {...checkoutForm}>
+          <FinishOrderTitle>Complete seu pedido</FinishOrderTitle>
+          <DeliveryAddressContainer>
+            <DeliveryAddressTitleContainer>
+              <MapPinLine size={22} />
+              <DeliveryAddressTitleTextContainer>
+                <DeliveryAddressTitleText>
+                  Endereço de Entrega
+                </DeliveryAddressTitleText>
+                <DeliveryAddressSubTitleText>
+                  Informe o endereço onde deseja receber seu pedido
+                </DeliveryAddressSubTitleText>
+              </DeliveryAddressTitleTextContainer>
+            </DeliveryAddressTitleContainer>
+            <AddressFormContainer>
+              <Input
+                id="cep"
+                type="number"
+                placeholder="CEP"
+                maxLength={8}
+                className="cep"
+                error={formState.errors.cep?.message}
+                {...register('cep')}
               />
-            ))}
-          </PaymentOptionsContainer>
-          {!!formState.errors.paymentOption?.message && (
-            <PaymentOptionErrorMessage>
-              {formState.errors.paymentOption?.message}
-            </PaymentOptionErrorMessage>
-          )}
-        </PaymentContainer>
+              <Input
+                id="street"
+                type="text"
+                placeholder="Rua"
+                className="street"
+                error={formState.errors.street?.message}
+                {...register('street')}
+              />
+              <Input
+                id="number"
+                type="number"
+                placeholder="Número"
+                className="number"
+                error={formState.errors.number?.message}
+                {...register('number', { valueAsNumber: true })}
+              />
+              <Input
+                id="complement"
+                type="text"
+                placeholder="Complemento"
+                className="complement"
+                error={formState.errors.complement?.message}
+                {...register('complement')}
+              />
+              <Input
+                id="neighborhood"
+                type="text"
+                placeholder="Bairro"
+                className="neighborhood"
+                error={formState.errors.neighborhood?.message}
+                {...register('neighborhood')}
+              />
+              <Input
+                id="city"
+                type="text"
+                placeholder="Cidade"
+                className="city"
+                error={formState.errors.city?.message}
+                {...register('city')}
+              />
+              <Input
+                id="uf"
+                type="text"
+                placeholder="UF"
+                maxLength={2}
+                className="uf"
+                error={formState.errors.uf?.message}
+                {...register('uf')}
+              />
+            </AddressFormContainer>
+          </DeliveryAddressContainer>
+          <PaymentContainer>
+            <PaymentTitleContainer>
+              <CurrencyDollar size={22} />
+              <PaymentTitleTextContainer>
+                <PaymentTitleText>Pagamento</PaymentTitleText>
+                <PaymentSubTitleText>
+                  O pagamento é feito na entrega. Escolha a forma que deseja
+                  pagar
+                </PaymentSubTitleText>
+              </PaymentTitleTextContainer>
+            </PaymentTitleContainer>
+            <PaymentOptionList
+              error={formState.errors.paymentOption?.message}
+            />
+          </PaymentContainer>
+        </FormProvider>
       </FinishOrderContainer>
       <SelectedCoffeesContainer>
         <SelectedCoffeesTitle>Cafés selecionados</SelectedCoffeesTitle>

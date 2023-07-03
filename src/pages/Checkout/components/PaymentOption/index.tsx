@@ -1,5 +1,6 @@
 import { InputHTMLAttributes, ReactNode, forwardRef } from 'react'
 import { Container, ContentContainer, Text } from './styles'
+import { useFormContext } from 'react-hook-form'
 
 type PaymentOptionProps = InputHTMLAttributes<HTMLInputElement> & {
   icon: ReactNode
@@ -8,9 +9,11 @@ type PaymentOptionProps = InputHTMLAttributes<HTMLInputElement> & {
 
 const PaymentOption = forwardRef<HTMLInputElement, PaymentOptionProps>(
   ({ id, icon, title, ...props }, ref) => {
+    const { register } = useFormContext()
+
     return (
       <Container>
-        <input type="radio" id={id} name="paymentOption" ref={ref} {...props} />
+        <input type="radio" id={id} {...register('paymentOption')} {...props} />
         <label htmlFor={id}>
           <ContentContainer>
             {icon}
