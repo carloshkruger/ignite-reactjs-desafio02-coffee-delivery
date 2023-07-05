@@ -1,4 +1,4 @@
-# Ignite Todo List Challenge
+# Ignite Coffee Delivery Challenge
 
 Second IgniteJS Bootcamp challenge: Coffee Delivery.
 
